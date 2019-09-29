@@ -91,6 +91,6 @@ class ConverterViewModelTest {
         viewModel.selectedCurrency.value =
             Currency(currencyCode = "USD", currencyName = "United States Dollar", exchangeRate = BigDecimal.ONE)
         viewModel.conversionResults.observeForever(mock())
-        assert(viewModel.conversionResults.value?.first()?.value == "LKR - 5")
+        assert(viewModel.conversionResults.value?.first()?.value == "LKR\n5")
     }
 }

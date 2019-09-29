@@ -55,9 +55,9 @@ class ConverterViewModel @Inject constructor(private val currencyRepo: CurrencyR
                     val convertedAmount = usdValue.multiply(currency.exchangeRate).setScale(6, BigDecimal.ROUND_HALF_UP)
                     val singleUnitValue =
                         singleUnitUsdValue.multiply(currency.exchangeRate).setScale(6, BigDecimal.ROUND_HALF_UP)
-                    val valueString = "${currency.currencyCode} - ${formatter.format(convertedAmount)}"
+                    val valueString = "${currency.currencyCode}\n${formatter.format(convertedAmount)}"
                     val singleUnitString =
-                        "1 ${selectedCurrency.currencyCode} = ${formatter.format(singleUnitValue)} ${currency.currencyCode}"
+                        "1 ${selectedCurrency.currencyCode}\n=\n${formatter.format(singleUnitValue)} ${currency.currencyCode}"
 
                     results.add(ConversionResult(valueString, singleUnitString, currency.currencyName))
                 }

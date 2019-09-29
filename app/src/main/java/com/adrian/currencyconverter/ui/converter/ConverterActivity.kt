@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.adrian.currencyconverter.R
 import com.adrian.currencyconverter.databinding.ActivityConverterBinding
@@ -24,7 +23,7 @@ class ConverterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        converterViewModel = ViewModelProviders.of(this, viewModelFactory)
+        converterViewModel = ViewModelProvider(this, viewModelFactory)
             .get(ConverterViewModel::class.java)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_converter);
         binding.lifecycleOwner = this
