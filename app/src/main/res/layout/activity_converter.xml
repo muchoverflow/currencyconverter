@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.adrian.currencyconverter.repository.Resource" />
+
+        <import type="com.adrian.currencyconverter.repository.Status" />
+
+        <import type="com.adrian.currencyconverter.db.entity.Currency" />
+
+        <import type="java.util.List" />
+
+        <import type="androidx.lifecycle.LiveData" />
+
+        <import type="androidx.lifecycle.MutableLiveData" />
+
+        <import type="com.adrian.currencyconverter.ui.converter.CurrencySpinnerAdapter" />
+
+        <import type="com.adrian.currencyconverter.ui.common.RetryCallback" />
+
+        <variable
+            name="resource"
+            type="LiveData&lt;Resource&lt;List&lt;Currency>>>" />
+
+        <variable
+            name="currencyAdapter"
+            type="CurrencySpinnerAdapter" />
+
+        <variable
+            name="currency"
+            type="MutableLiveData&lt;Currency>" />
+
+        <variable
+            name="amount"
+            type="MutableLiveData&lt;String>" />
+
+        <variable
+            name="callback"
+            type="RetryCallback" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/etInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:hint="@string/amount"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:text="@={amount}"
+                tools:text="123,456.00" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tvCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/currency"
+            app:layout_constraintBottom_toBottomOf="@+id/currencySelector"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/currencySelector" />
+
+        <Spinner
+            android:id="@+id/currencySelector"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:gravity="end"
+            app:currencyAdapter="@{currencyAdapter}"
+            app:layout_constraintEnd_toEndOf="@id/textInputLayout"
+            app:layout_constraintStart_toEndOf="@id/tvCurrency"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayout"
+            app:selectedCurrency="@={currency}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRates"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/currencySelector" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:visibleOrGone="@{resource.status == Status.LOADING}" />
+
+        <Button
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> callback.retry()}"
+            android:text="@string/retry"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvErrorMessage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="top|center_horizontal"
+            android:text="@{resource.message}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnRetry"
+            tools:text="Error message" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/errorViews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="btnRetry,tvErrorMessage"
+            app:visibleOrGone="@{resource.status == Status.ERROR}" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/dataViews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="rvRates,tvCurrency,currencySelector,textInputLayout"
+            app:visibleOrGone="@{resource.status == Status.SUCCESS}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
